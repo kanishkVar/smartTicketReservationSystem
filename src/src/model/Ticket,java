@@ -1,0 +1,42 @@
+package model;
+
+public class Ticket {
+    private String id;
+    private String tripId;
+    private String passengerName;
+    private int seats;
+
+    public Ticket(String id, String tripId, String passengerName, int seats) {
+        this.id = id;
+        this.tripId = tripId;
+        this.passengerName = passengerName;
+        this.seats = seats;
+    }
+
+    public String getId() { return id; }
+    public String getTripId() { return tripId; }
+    public String getPassengerName() { return passengerName; }
+    public int getSeats() { return seats; }
+
+    public String toCSV() {
+        return String.join(",", escape(id), escape(tripId), escape(passengerName), String.valueOf(seats));
+    }
+
+    public static Ticket fromCSV(String line) {
+        String[] p = line.split(",", -1);
+        if (p.length < 4) return null;
+        try {
+            return new Ticket(unescape(p[0]), unescape(p[1]), unescape(p[2]), Integer.parseInt(p[3]));
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    private static String escape(String s) {
+        return s.replace("\n", " ").replace(",", "⸴");
+    }
+
+    private static String unescape(String s) {
+        return s.replace("⸴", ",");
+    }
+}
